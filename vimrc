@@ -102,6 +102,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'mattn/emmet-vim'
   Plug 'digitaltoad/vim-pug'
   Plug 'pangloss/vim-javascript'
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+  Plug 'junegunn/fzf.vim'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
 syntax enable
@@ -122,4 +127,21 @@ let g:go_highlight_fields = 1
 let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+
+
+" ==================== FZF ====================
+let g:fzf_command_prefix = 'Fzf'
+let g:fzf_layout = { 'down': '~20%' }
+
+" history search file
+nnoremap <leader>h :FzfHistory<cr>
+
+" search across files in the current directory
+nnoremap <leader>f :FzfFiles<cr>
+
+nnoremap <leader>l :FzfAg<cr>
+
+nnoremap <leader>ve :vsplit ~/.vim/vimrc<cr>
+
+nnoremap <silent> <c-x> :NERDTreeToggle<cr>
 
