@@ -1,7 +1,0 @@
-require('plugins.plug')
-require('plugins.oil')
-require('plugins.nvim-treesitter')
-require('plugins.coc')
-require('plugins.lualine')
-require('plugins.vim-lsc')
-require('plugins.telescope')
