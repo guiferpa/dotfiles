@@ -26,7 +26,7 @@
 # define x axis padding (default is 0)
 #
 # Example:
-# padding-x = 10
+padding-x = 10
 
 # Padding-y
 #
@@ -34,7 +34,7 @@
 # (default is [0, 0])
 #
 # Example:
-# padding-y = [30, 10]
+padding-y = [30, 10]
 
 # Option as Alt
 #
@@ -79,7 +79,7 @@
 # Confirm before exiting Rio
 # Default is `true`
 #
-# confirm-before-quit = false
+confirm-before-quit = false
 
 # Cursor
 #
@@ -102,9 +102,9 @@
 #
 # Whenever the key binding `OpenConfigEditor` is triggered it will
 # use the value of the editor along with the rio configuration path.
-# [editor]
-# program = "vi"
-# args = []
+[editor]
+program = "nvim"
+args = []
 
 # Window configuration
 #
@@ -126,12 +126,12 @@
 # • decorations - Set window decorations, options: "Enabled", "Disabled", "Transparent", "Buttonless"
 #
 # Example:
-# [window]
+[window]
 # width = 600
 # height = 400
 # mode = "windowed"
-# opacity = 1.0
-# blur = false
+opacity = 0.4
+blur = true
 # decorations = "enabled"
 
 # Renderer
