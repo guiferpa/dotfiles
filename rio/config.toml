@@ -60,7 +60,7 @@ padding-y = [30, 10]
 # This configuration only has effect if use-fork is disabled.
 #
 # Example:
-# working-dir = "/Users/raphael/Documents/"
+# working-dir = "/"
 
 # Environment variables
 #
@@ -130,7 +130,7 @@ args = []
 # width = 600
 # height = 400
 # mode = "windowed"
-opacity = 0.4
+opacity = 0.6
 blur = true
 # decorations = "enabled"
 

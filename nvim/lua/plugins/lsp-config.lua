@@ -14,6 +14,9 @@ return {
       lspconfig.gopls.setup({
         capabilities = capabilities,
       })
+      lspconfig.pylsp.setup({
+        capabilities = capabilities,
+      })
       lspconfig.clojure_lsp.setup({
         capabilities = capabilities,
       })
