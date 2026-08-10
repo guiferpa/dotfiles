@@ -18,8 +18,10 @@
 # (macos and linux: ~/.config/rio/themes/dracula.toml)
 # (windows: C:\Users\USER\AppData\Local\rio\themes\dracula.toml)
 #
-# Example:
-# theme = "dracula"
+# The palette itself lives in themes/dracula.toml, next to this file, and is
+# installed to ~/.config/rio/themes/ along with it. Neovim matches it through
+# the dracula.nvim colorscheme in nvim/lua/plugins/dracula.lua.
+theme = "dracula"
 
 # Padding-x
 #

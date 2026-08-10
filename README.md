@@ -5,8 +5,8 @@ Personal configuration files for [Neovim](https://neovim.io/),
 
 | Directory | Installed to               | What it is                                         |
 | --------- | -------------------------- | -------------------------------------------------- |
-| `nvim/`   | `~/.config/nvim`           | Neovim setup: `lazy.nvim`, LSP, gruvbox, telescope |
-| `rio/`    | `~/.config/rio`            | Rio terminal: padding, transparency, blur          |
+| `nvim/`   | `~/.config/nvim`           | Neovim setup: `lazy.nvim`, LSP, Dracula, telescope |
+| `rio/`    | `~/.config/rio`            | Rio terminal: Dracula, padding, transparency, blur |
 | `htop/`   | `~/.config/htop`           | htop meters and layout                             |
 | `zsh/`    | `~/.zshrc`, `~/.zshenv`    | Shell startup, including the asdf setup            |
 
@@ -111,6 +111,39 @@ Casks:
 | `font-jetbrains-mono-nerd-font` | The font Rio and Neovim are rendered with |
 
 No language runtime is installed with Homebrew — see below.
+
+## Theme
+
+[Dracula](https://draculatheme.com/rio-terminal), applied in both places so the
+terminal and the editor agree on every colour.
+
+| Where           | File                             | What sets it                              |
+| --------------- | -------------------------------- | ----------------------------------------- |
+| Rio             | `rio/config.toml`                | `theme = "dracula"`                        |
+| Rio palette     | `rio/themes/dracula.toml`        | The upstream `[colors]` table, vendored    |
+| Neovim          | `nvim/lua/plugins/dracula.lua`   | `Mofiqul/dracula.nvim`                     |
+| Neovim status   | `nvim/lua/plugins/lualine.lua`   | lualine's bundled `dracula` theme          |
+
+Rio resolves `theme = "dracula"` against `~/.config/rio/themes/dracula.toml`.
+The installer copies the whole `rio/` directory, so the palette lands there
+with no extra step and nothing is downloaded at install time.
+
+Two things to know before changing it:
+
+- **The colorscheme has to be the same on both sides.** Rio paints the 16 ANSI
+  colours that anything non-Neovim uses — `ls`, `git diff`, `htop`, the shell
+  prompt. Neovim ignores them and paints from its own colorscheme. Changing one
+  without the other leaves the terminal and the editor disagreeing.
+- **`Mofiqul/dracula.nvim`, not upstream `dracula/vim`.** This config is built
+  on treesitter, LSP semantic tokens, Telescope, Trouble and barbecue, and only
+  the Lua port defines highlight groups for them. `dracula/vim` is vimscript and
+  predates all of it, so those plugins would fall back to default groups.
+
+`window.opacity = 0.6` in `rio/config.toml` is still in effect, so the desktop
+shows through the Dracula background and washes out its contrast. Set it to
+`1.0` if you want the palette at full strength. Neovim's `transparent_bg` is
+deliberately off for the same reason — an opaque background painted inside
+Neovim would cancel the terminal's transparency out.
 
 ## Font
 
