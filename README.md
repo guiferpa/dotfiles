@@ -103,9 +103,58 @@ Formulae:
 | `git`, `curl`   | Used by `lazy.nvim` to fetch plugins, and to clone this repo |
 | `asdf`          | Version manager for the language runtimes                    |
 
-Casks: `rio`.
+Casks:
+
+| Package                         | Reason                                    |
+| ------------------------------- | ----------------------------------------- |
+| `rio`                           | The terminal                              |
+| `font-jetbrains-mono-nerd-font` | The font Rio and Neovim are rendered with |
 
 No language runtime is installed with Homebrew — see below.
+
+## Font
+
+[JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), in the
+[Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) patched build, at size 12.
+Set once in `rio/config.toml`:
+
+```toml
+[fonts]
+family = "JetBrainsMono Nerd Font Mono"
+size = 12
+```
+
+That is also the Neovim font. Neovim has no font setting of its own — it draws
+through the terminal, so there is nothing to configure on the `nvim/` side.
+
+Three details worth keeping in mind when changing it:
+
+- **Use the `Mono` variant.** Nerd Fonts ships three builds of every family,
+  differing only in how the added icon glyphs are sized. `Mono` keeps them
+  inside a single cell; `Propo` and the plain build let them run wider, which
+  makes the icons in `oil`, `lualine` and `barbecue` overlap the next column.
+- **The patched build is not interchangeable with upstream.** `oil`, `lualine`
+  and `barbecue` pull in `nvim-web-devicons`, which draws Nerd Font codepoints
+  that upstream `JetBrains/JetBrainsMono` does not contain — with the plain
+  font they render as tofu boxes.
+- **A monospaced font is not automatically a terminal font.** Coverage measured
+  on the actual files:
+
+  | Font                     | Codepoints | Box drawing | Blocks | Braille | Powerline | Icons |
+  | ------------------------ | ---------: | ----------- | ------ | ------- | --------- | ----- |
+  | JetBrainsMono Nerd Font  |     12 121 | 128/128     | 32/32  | 256/256 | 4/4       | ~8600 |
+  | Chivo Mono               |        642 | 0/128       | 0/32   | 0/256   | 0/4       | 0     |
+  | Azeret Mono              |        433 | 0/128       | 0/32   | 0/256   | 0/4       | 0     |
+
+  Chivo Mono and Azeret Mono are text and display faces. With either of them,
+  everything structural — window splits, Telescope and Trouble borders, htop
+  meters, plugin spinners — falls back to whatever font Rio substitutes, at
+  different metrics.
+
+Patching in the icons adds only the private-use ranges, never missing Unicode,
+so check a glyph before putting it in a config that draws it on every line.
+`listchars` in `nvim/lua/options.lua` uses `⏎` rather than `↲` for that reason:
+JetBrains Mono has no `↲` or `↵`.
 
 ## Language runtimes
 

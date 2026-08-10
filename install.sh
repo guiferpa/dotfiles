@@ -42,8 +42,12 @@ HOME_FILES=(zsh/zshrc:.zshrc zsh/zshenv:.zshenv)
 # and rust are managed by asdf, never by Homebrew. See ASDF_PLUGINS below.
 BREW_FORMULAE=(neovim ripgrep fd htop git curl asdf)
 
-# Homebrew casks
-BREW_CASKS=(rio)
+# Homebrew casks:
+#   rio                            the terminal
+#   font-jetbrains-mono-nerd-font  the font rio (and therefore neovim) draws
+#                                  with, patched with the Nerd Font icons that
+#                                  nvim-web-devicons needs
+BREW_CASKS=(rio font-jetbrains-mono-nerd-font)
 
 # asdf plugins to register, as "<name> <git url>".
 #

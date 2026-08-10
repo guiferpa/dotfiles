@@ -233,6 +233,31 @@ blur = true
 # style = "Italic"
 # weight = 800
 
+# JetBrains Mono, in the Nerd Fonts patched build.
+#
+# Neovim has no font setting of its own: it renders through whatever the
+# terminal draws with, so this is the Neovim font too.
+#
+# The "Mono" variant is the one to use in a terminal. Nerd Fonts ships three
+# builds of every family and they differ only in how the added icon glyphs are
+# sized: "Mono" constrains them to a single cell, "Propo" and the plain build
+# let them spill wider. Anything but Mono makes the icons in oil, lualine and
+# barbecue overlap the column next to them.
+#
+# The patched build is what carries the icons: nvim-web-devicons draws Nerd
+# Font codepoints that upstream JetBrains/JetBrainsMono does not contain, and
+# they would render as tofu boxes.
+#
+# Beware of text-oriented monospaced fonts here. Chivo Mono and Azeret Mono
+# were tried and cover roughly 640 and 430 codepoints: no box drawing, no block
+# elements, no braille, no powerline, no icons. Everything structural — window
+# splits, telescope and trouble borders, htop meters, plugin spinners — would
+# come from whatever font Rio substitutes, at different metrics. This build
+# covers 12121 codepoints and all of those ranges.
+[fonts]
+family = "JetBrainsMono Nerd Font Mono"
+size = 12
+
 # Scroll
 #
 # You can change how many lines are scrolled each time by setting this option.
