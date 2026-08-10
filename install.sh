@@ -5,14 +5,18 @@
 # Copies the configs from this repository into ~/.config and installs the
 # dependencies they need. macOS only for now.
 #
-# Usage:
-#   ./install.sh              # install everything
-#   ./install.sh --no-deps    # only copy the configs
-#   ./install.sh --dry-run    # show what would happen, change nothing
+# Can be run from a checkout or straight from the network, in which case it
+# clones the repository into a temporary directory first.
 
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_URL="https://github.com/guiferpa/dotfiles.git"
+
+# Empty when the script is piped into bash (there is no file on disk).
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd || true)"
+
+DOTFILES_DIR=""
+CLONE_DIR=""
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 BACKUP_SUFFIX="backup.$(date +%Y%m%d%H%M%S)"
 
@@ -65,7 +69,41 @@ Usage:
   ./install.sh --no-deps    only copy the configs
   ./install.sh --dry-run    show what would happen, change nothing
   ./install.sh --help       show this message
+
+Without a checkout, run it straight from the network:
+  curl -fsSL https://raw.githubusercontent.com/guiferpa/dotfiles/main/install.sh | bash
 EOF
+}
+
+cleanup() {
+  if [ -n "$CLONE_DIR" ] && [ -d "$CLONE_DIR" ]; then
+    rm -rf "$CLONE_DIR"
+  fi
+}
+trap cleanup EXIT
+
+# Finds the configs next to the script, or clones the repository when the
+# script was piped into bash and there is nothing on disk to copy from.
+resolve_dotfiles() {
+  if [ -n "$SCRIPT_DIR" ] && [ -d "$SCRIPT_DIR/${CONFIGS[0]}" ]; then
+    DOTFILES_DIR="$SCRIPT_DIR"
+    info "using checkout at $DOTFILES_DIR"
+    return
+  fi
+
+  if ! command -v git >/dev/null 2>&1; then
+    error "git is required to download the configs but was not found."
+    error "Install it with: brew install git"
+    exit 1
+  fi
+
+  CLONE_DIR="$(mktemp -d)"
+  info "no checkout found, cloning $REPO_URL"
+  # Runs even on --dry-run: it only writes to a temporary directory, and
+  # without it there would be nothing to compare against.
+  git clone --depth 1 --quiet "$REPO_URL" "$CLONE_DIR"
+  DOTFILES_DIR="$CLONE_DIR"
+  ok "cloned to $DOTFILES_DIR (removed when the script exits)"
 }
 
 parse_args() {
@@ -180,11 +218,11 @@ install_configs() {
 main() {
   parse_args "$@"
 
-  info "dotfiles: $DOTFILES_DIR"
   [ "$DRY_RUN" -eq 1 ] && warn "dry-run: no changes will be made"
 
   check_os
 
+  # Dependencies come first so that git is available to resolve_dotfiles.
   if [ "$INSTALL_DEPS" -eq 1 ]; then
     check_homebrew
     install_deps
@@ -192,6 +230,7 @@ main() {
     info "skipping dependencies (--no-deps)"
   fi
 
+  resolve_dotfiles
   install_configs
 
   info "done"

@@ -3,18 +3,33 @@
 Personal configuration files for [Neovim](https://neovim.io/),
 [Rio](https://github.com/raphamorim/rio) and [htop](https://htop.dev/).
 
-| Directory | Installed to      |
-| --------- | ----------------- |
-| `nvim/`   | `~/.config/nvim`  |
-| `rio/`    | `~/.config/rio`   |
-| `htop/`   | `~/.config/htop`  |
+| Directory | Installed to     | What it is                                      |
+| --------- | ---------------- | ----------------------------------------------- |
+| `nvim/`   | `~/.config/nvim` | Neovim setup: `lazy.nvim`, LSP, gruvbox, telescope |
+| `rio/`    | `~/.config/rio`  | Rio terminal: padding, transparency, blur         |
+| `htop/`   | `~/.config/htop` | htop meters and layout                            |
 
-## Requirements
+## Quick install
 
-- macOS — Linux is not supported yet, the installer stops if it detects one
-- [Homebrew](https://brew.sh/) — the installer aborts with instructions if it is missing
+No clone needed — run it straight from the network:
 
-## Installation
+```sh
+curl -fsSL https://raw.githubusercontent.com/guiferpa/dotfiles/main/install.sh | bash
+```
+
+The script clones the repository into a temporary directory, installs
+everything and removes the clone on exit.
+
+Flags go after `-s --`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/guiferpa/dotfiles/main/install.sh | bash -s -- --dry-run
+```
+
+> Piping a remote script into `bash` runs code you have not read. Feel free to
+> open the URL first, or use the clone below.
+
+## Install from a clone
 
 ```sh
 git clone https://github.com/guiferpa/dotfiles.git
@@ -22,11 +37,18 @@ cd dotfiles
 ./install.sh
 ```
 
-The script installs the dependencies and copies each configuration directory
-into `~/.config`. Open `nvim` once afterwards so `lazy.nvim` can bootstrap the
+Running from a checkout uses the configs sitting next to the script, so local
+edits are applied without pushing them first.
+
+Either way, open `nvim` once afterwards so `lazy.nvim` can bootstrap the
 plugins.
 
-### Options
+## Requirements
+
+- macOS — Linux is not supported yet, the installer stops if it detects one
+- [Homebrew](https://brew.sh/) — the installer aborts with instructions if it is missing
+
+## Options
 
 | Flag        | Description                                       |
 | ----------- | ------------------------------------------------- |
@@ -42,9 +64,17 @@ Preview an installation before committing to it:
 
 ## How it works
 
-The installer is idempotent — running it twice is safe and the second run is a
-no-op. For each configuration directory it compares the source with what is
-already in `~/.config`:
+1. **Detects the OS.** macOS continues; Linux stops with a warning; anything
+   else is rejected.
+2. **Installs the dependencies** with Homebrew, skipping what is already there.
+3. **Finds the configs** — next to the script when run from a clone, otherwise
+   by cloning the repository into a temporary directory.
+4. **Copies each directory** into `~/.config`.
+
+### Idempotency
+
+Running the installer twice is safe and the second run is a no-op. Each
+configuration directory is compared against what is already in `~/.config`:
 
 - **missing** → copies it
 - **identical** → reports `already up to date` and skips it, without writing anything
@@ -62,13 +92,13 @@ already installed ones are left alone.
 
 Formulae:
 
-| Package           | Reason                                                          |
-| ----------------- | --------------------------------------------------------------- |
-| `neovim`          | The editor                                                        |
-| `ripgrep`, `fd`   | Telescope `live_grep` and `find_files`                            |
-| `htop`            | Process viewer                                                    |
-| `git`, `curl`     | Used by `lazy.nvim` to fetch plugins                              |
-| `node`, `go`, `python` | Runtimes for the LSPs installed by Mason (`ts_ls`, `gopls`, `pylsp`) |
+| Package                | Reason                                                               |
+| ---------------------- | -------------------------------------------------------------------- |
+| `neovim`               | The editor                                                             |
+| `ripgrep`, `fd`        | Telescope `live_grep` and `find_files`                                 |
+| `htop`                 | Process viewer                                                         |
+| `git`, `curl`          | Used by `lazy.nvim` to fetch plugins, and to clone this repo           |
+| `node`, `go`, `python` | Runtimes for the LSPs installed by Mason (`ts_ls`, `gopls`, `pylsp`)   |
 
 Casks: `rio`.
 
