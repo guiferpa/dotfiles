@@ -26,17 +26,36 @@ DRY_RUN=0
 # Configs shipped by this repo. Each one is copied to $CONFIG_DIR/<name>.
 CONFIGS=(nvim rio htop)
 
+# Files copied straight into $HOME: zsh reads its startup files from the home
+# directory, so they cannot live under $CONFIG_DIR.
+# Format: "<path in this repo>:<path relative to $HOME>"
+HOME_FILES=(zsh/zshrc:.zshrc zsh/zshenv:.zshenv)
+
 # Homebrew formulae:
 #   neovim            the editor itself
 #   ripgrep, fd       telescope live_grep / find_files
 #   htop              process viewer
 #   git, curl         lazy.nvim plugin manager
-#   node, go, python  runtimes for the LSPs installed by Mason
-#                     (ts_ls, gopls, pylsp; lua_ls and clojure_lsp ship binaries)
-BREW_FORMULAE=(neovim ripgrep fd htop git curl node go python)
+#   asdf              version manager for the language runtimes
+#
+# Language runtimes are deliberately absent from this list: node, go, python
+# and rust are managed by asdf, never by Homebrew. See ASDF_PLUGINS below.
+BREW_FORMULAE=(neovim ripgrep fd htop git curl asdf)
 
 # Homebrew casks
 BREW_CASKS=(rio)
+
+# asdf plugins to register, as "<name> <git url>".
+#
+# Only the plugins are added. No version is installed and ~/.tool-versions is
+# never written, so each project decides its own versions through its local
+# .tool-versions and `asdf install` is run by hand when needed.
+ASDF_PLUGINS=(
+  "nodejs https://github.com/asdf-vm/asdf-nodejs.git"
+  "golang https://github.com/asdf-community/asdf-golang.git"
+  "python https://github.com/asdf-community/asdf-python.git"
+  "rust https://github.com/code-lever/asdf-rust.git"
+)
 
 RED=$'\033[0;31m'
 GREEN=$'\033[0;32m'
@@ -173,6 +192,37 @@ install_deps() {
   done
 }
 
+install_asdf_plugins() {
+  info "registering asdf plugins"
+
+  if ! command -v asdf >/dev/null 2>&1; then
+    if [ "$DRY_RUN" -eq 1 ]; then
+      warn "asdf is not on PATH (it would have been installed above), skipping plugins"
+      return 0
+    fi
+    error "asdf was installed but is not on PATH, cannot add the plugins."
+    error "Open a new shell and run this script again."
+    exit 1
+  fi
+
+  local installed entry name url
+  installed="$(asdf plugin list 2>/dev/null || true)"
+
+  for entry in "${ASDF_PLUGINS[@]}"; do
+    name="${entry%% *}"
+    url="${entry#* }"
+
+    if printf '%s\n' "$installed" | grep -qx "$name"; then
+      ok "asdf plugin $name already added"
+    else
+      info "asdf plugin add $name"
+      run asdf plugin add "$name" "$url"
+    fi
+  done
+
+  info "no runtime version is installed: use 'asdf install <plugin> <version>'"
+}
+
 # Returns 0 when $2 is already an exact copy of the directory $1.
 config_is_current() {
   local src="$1" dest="$2"
@@ -215,6 +265,36 @@ install_configs() {
   done
 }
 
+install_home_files() {
+  info "copying shell files to $HOME"
+
+  local entry src dest
+  for entry in "${HOME_FILES[@]}"; do
+    src="$DOTFILES_DIR/${entry%%:*}"
+    dest="$HOME/${entry##*:}"
+
+    if [ ! -f "$src" ]; then
+      warn "${entry%%:*} not found in $DOTFILES_DIR, skipping"
+      continue
+    fi
+
+    # A symlink is not a copy, so it must be replaced even when it resolves to
+    # an identical file.
+    if [ ! -L "$dest" ] && cmp -s "$src" "$dest"; then
+      ok "${entry##*:} already up to date"
+      continue
+    fi
+
+    if [ -e "$dest" ] || [ -L "$dest" ]; then
+      info "backing up $dest -> $dest.$BACKUP_SUFFIX"
+      run mv "$dest" "$dest.$BACKUP_SUFFIX"
+    fi
+
+    run cp "$src" "$dest"
+    ok "${entry%%:*} -> $dest"
+  done
+}
+
 main() {
   parse_args "$@"
 
@@ -226,14 +306,17 @@ main() {
   if [ "$INSTALL_DEPS" -eq 1 ]; then
     check_homebrew
     install_deps
+    install_asdf_plugins
   else
     info "skipping dependencies (--no-deps)"
   fi
 
   resolve_dotfiles
   install_configs
+  install_home_files
 
   info "done"
+  info "open a new shell to pick up the asdf shims"
   info "open nvim once to let lazy.nvim bootstrap the plugins"
 }
 

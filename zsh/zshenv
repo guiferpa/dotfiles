@@ -1,0 +1,6 @@
+# Read by every zsh invocation, interactive or not.
+#
+# Appends only: nothing here may come before the asdf shims exported at the
+# bottom of .zshrc, or it would shadow a language runtime.
+
+export PATH="$PATH:$HOME/.foundry/bin"
