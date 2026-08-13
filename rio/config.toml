@@ -258,7 +258,7 @@ blur = true
 # covers 12121 codepoints and all of those ranges.
 [fonts]
 family = "JetBrainsMono Nerd Font Mono"
-size = 12
+size = 14
 
 # Scroll
 #
