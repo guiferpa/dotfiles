@@ -163,12 +163,21 @@ size = 14
 That is also the Neovim font. Neovim has no font setting of its own — it draws
 through the terminal, so there is nothing to configure on the `nvim/` side.
 
+Alongside it, a `symbol-map` block redirects the icon codepoint ranges — and
+only those — to the plain `JetBrainsMono Nerd Font`. The `Mono` build scales
+every icon down to fit one cell, which left them rendering at 82% of cap
+height: visibly smaller than the letters beside them. **[ICONS.md](rio/ICONS.md)
+has the measurements and the reasoning**, including why switching `family`
+wholesale is the wrong fix and why Powerline is excluded from the map.
+
 Three details worth keeping in mind when changing it:
 
-- **Use the `Mono` variant.** Nerd Fonts ships three builds of every family,
-  differing only in how the added icon glyphs are sized. `Mono` keeps them
-  inside a single cell; `Propo` and the plain build let them run wider, which
-  makes the icons in `oil` and `lualine` overlap the next column.
+- **Keep `family` on the `Mono` variant.** Nerd Fonts ships three builds of
+  every family, differing only in how the added icon glyphs are sized. `Mono`
+  keeps them inside a single cell; `Propo` and the plain build let them run
+  wider, which makes the icons in `oil` and `lualine` overlap the next column.
+  The `symbol-map` above is how this config gets the size back without that
+  overlap — it buys the exception only where the neighbouring column is padding.
 - **The patched build is not interchangeable with upstream.** `oil` and
   `lualine` draw their file icons through `mini.icons`
   (`nvim/lua/plugins/icons.lua`), which uses Nerd Font codepoints that upstream

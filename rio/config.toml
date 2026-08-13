@@ -246,6 +246,14 @@ blur = true
 # let them spill wider. Anything but Mono makes the icons in oil and lualine
 # overlap the column next to them.
 #
+# That constraint is also why the icons look shrunken. All three builds keep a
+# 600-unit advance for text, and the Mono build additionally clamps each icon's
+# ink to that same 600 — scaling the glyph down to fit. Measured on the current
+# install, Material Design icons average 0.596 em tall in Mono against 0.776 in
+# the plain build: an icon rendered smaller than the capital letters beside it
+# (0.730). `symbol-map` below is the way out. See ICONS.md for the full
+# measurements.
+#
 # The patched build is what carries the icons: mini.icons draws Nerd Font
 # codepoints that upstream JetBrains/JetBrainsMono does not contain, and they
 # would render as tofu boxes. Nerd Fonts 3.0 or newer specifically — mini.icons
@@ -261,6 +269,41 @@ blur = true
 [fonts]
 family = "JetBrainsMono Nerd Font Mono"
 size = 14
+
+# Draw the icon codepoints from the plain build instead of the Mono one.
+#
+# `family` above stays Mono so every character that carries meaning as text —
+# letters, box drawing, block elements, braille — keeps a one-cell advance and
+# the grid stays honest. These ranges hold nothing but icons, so they can come
+# from the unconstrained build and render at the size they were drawn at.
+#
+# The ranges are the Nerd Fonts v3 layout. Two classes are deliberately absent:
+#
+#   Powerline    U+E0A0-E0D7   Nothing to gain and a grid to lose. These are
+#                              already drawn past full em height in both builds
+#                              (1.253 vs 1.264 — a 1% difference, against 30%
+#                              for Material Design), because a lualine
+#                              separator has to meet its neighbours edge to
+#                              edge. It is the one class whose exact geometry
+#                              is the point.
+#   IEC power    U+23FB-23FE   Sits next to real text in status output.
+#
+# Material Design (U+F0001-F1AF0) is the one that matters most for oil: it is
+# where mini.icons takes the bulk of its filetype glyphs.
+#
+# Rio does not live-reload this one — restart the terminal after editing.
+symbol-map = [
+  { start = "E000", end = "E00A", font-family = "JetBrainsMono Nerd Font" },  # Pomicons
+  { start = "E200", end = "E2A9", font-family = "JetBrainsMono Nerd Font" },  # Font Awesome Extension
+  { start = "E300", end = "E3E3", font-family = "JetBrainsMono Nerd Font" },  # Weather
+  { start = "E5FA", end = "E6B7", font-family = "JetBrainsMono Nerd Font" },  # Seti-UI + Custom
+  { start = "E700", end = "E8EF", font-family = "JetBrainsMono Nerd Font" },  # Devicons
+  { start = "EA60", end = "EC1E", font-family = "JetBrainsMono Nerd Font" },  # Codicons
+  { start = "ED00", end = "F2FF", font-family = "JetBrainsMono Nerd Font" },  # Font Awesome
+  { start = "F300", end = "F381", font-family = "JetBrainsMono Nerd Font" },  # Font Logos
+  { start = "F400", end = "F533", font-family = "JetBrainsMono Nerd Font" },  # Octicons
+  { start = "F0001", end = "F1AF0", font-family = "JetBrainsMono Nerd Font" } # Material Design
+]
 
 # Scroll
 #
