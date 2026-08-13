@@ -265,7 +265,8 @@ right — when it finds none, so an `opencode --port` left open in another pane
 is adopted instead of duplicated.
 
 Mappings live under `,a`, since `,o` is oil's and `,c` clears the search
-highlight:
+highlight. [`nvim/SHORTCUTS.md`](nvim/SHORTCUTS.md) is the full reference and
+covers how to drive the agent; the short version:
 
 | Key   | Action                                       |
 | ----- | -------------------------------------------- |
