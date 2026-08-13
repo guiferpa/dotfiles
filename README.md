@@ -102,6 +102,7 @@ Formulae:
 | `htop`          | Process viewer                                               |
 | `git`, `curl`   | Used by `lazy.nvim` to fetch plugins, and to clone this repo |
 | `asdf`          | Version manager for the language runtimes                    |
+| `opencode`      | The AI agent Neovim drives — see below                       |
 
 Casks:
 
@@ -110,7 +111,9 @@ Casks:
 | `rio`                           | The terminal                              |
 | `font-jetbrains-mono-nerd-font` | The font Rio and Neovim are rendered with |
 
-No language runtime is installed with Homebrew — see below.
+No language runtime is installed with Homebrew — see below. The one exception
+arrives indirectly: the `opencode` formula depends on `node`, so Homebrew
+installs one. It stays shadowed by the asdf shims and nothing here uses it.
 
 ## Theme
 
@@ -246,6 +249,65 @@ first, since other formulae may depend on them.
 Mason installs `ts_ls` and `pylsp` into whatever `node`/`python` is active, so
 they live inside an asdf install directory. After changing a runtime version,
 run `asdf reshim` and reinstall the affected servers from `:Mason`.
+
+## AI agent
+
+[opencode](https://opencode.ai/) runs as its own process and Neovim talks to it
+over its HTTP API through
+[`opencode.nvim`](https://github.com/nickjvandyke/opencode.nvim)
+(`nvim/lua/plugins/opencode.lua`). There is no chat window inside Neovim: the
+agent keeps its own TUI, and the plugin supplies the editor context and the
+connection.
+
+The server must be started with `--port` or nothing can reach it. The plugin
+looks for one already running and only starts its own — a terminal split on the
+right — when it finds none, so an `opencode --port` left open in another pane
+is adopted instead of duplicated.
+
+Mappings live under `,a`, since `,o` is oil's and `,c` clears the search
+highlight:
+
+| Key   | Action                                       |
+| ----- | -------------------------------------------- |
+| `,aa` | Ask about the cursor position or selection   |
+| `,ab` | Ask about the whole buffer                   |
+| `,ad` | Ask about diagnostics                        |
+| `,as` | Select a prompt, command or server           |
+| `,ao` | Operator: append a motion's range to a prompt |
+| `,an` | New session                                  |
+| `,ax` | Interrupt the session                        |
+| `,au` | Scroll the agent's output up                 |
+| `,ae` | Scroll the agent's output down                |
+
+These are not the mappings the plugin's README suggests. `<C-a>` and `<C-x>`
+are Vim's increment and decrement, `go` is a motion, and the proposed
+`<S-C-u>`/`<S-C-d>` need a terminal that tells Ctrl-Shift apart from plain
+Ctrl — Rio only does that with `use-kitty-keyboard-protocol`, which
+`rio/config.toml` leaves off.
+
+Run `:checkhealth opencode` after the first start.
+
+### Credentials
+
+opencode reads its provider keys from the environment, so they have to be set
+somewhere every shell sees — including the non-interactive one behind the
+`term://opencode --port` buffer. That means `zshenv`.
+
+`zsh/zshenv` carries the full list as **commented-out placeholders**:
+`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, the Bedrock
+`AWS_*` trio, the optional `OPENCODE_CONFIG` / `OPENCODE_CONFIG_DIR`, and
+`OPENCODE_SERVER_USERNAME` / `OPENCODE_SERVER_PASSWORD` for a remote server.
+Only the provider actually configured as the model needs a key.
+
+**No real key goes in that file.** It is committed here and copied to
+`~/.zshenv`, so anything written into it gets published. Real values go in
+`~/.zshenv.local`, which the last lines of `zshenv` source if it exists and
+which no part of this repository tracks:
+
+```sh
+touch ~/.zshenv.local && chmod 600 ~/.zshenv.local
+echo 'export ANTHROPIC_API_KEY="…"' >> ~/.zshenv.local
+```
 
 ## Updating
 

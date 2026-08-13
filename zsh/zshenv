@@ -3,3 +3,47 @@
 # Appends only: nothing here may come before the asdf shims exported at the
 # bottom of .zshrc, or it would shadow a language runtime.
 
+# ---------------------------------------------------------------------------
+# opencode
+#
+# Credentials for the agent that nvim/lua/plugins/opencode.lua drives. opencode
+# reads them from the environment, and zshenv is read by non-interactive shells
+# too — which is what the `term://opencode --port` buffer Neovim opens is.
+#
+# THIS FILE IS PUBLIC. It is committed to the dotfiles repository and copied to
+# ~/.zshenv by install.sh. Every value below is a placeholder and every line is
+# commented out; a real key written here would be published on the next push.
+#
+# Real keys belong in ~/.zshenv.local, sourced at the bottom of this file and
+# never tracked. Create it with `touch ~/.zshenv.local && chmod 600 ~/.zshenv.local`.
+#
+# Only the provider you actually configure as the model needs a key — this is a
+# menu, not a checklist.
+#
+# export ANTHROPIC_API_KEY="sk-ant-api03-000000000000000000000000"
+# export OPENAI_API_KEY="sk-proj-000000000000000000000000"
+# export OPENROUTER_API_KEY="sk-or-v1-000000000000000000000000"
+#
+# Amazon Bedrock authenticates by profile and region rather than by key:
+# export AWS_BEARER_TOKEN_BEDROCK="000000000000000000000000"
+# export AWS_PROFILE="default"
+# export AWS_REGION="us-east-1"
+#
+# Not credentials — these only relocate opencode's own configuration:
+# export OPENCODE_CONFIG="$HOME/.config/opencode/opencode.json"
+# export OPENCODE_CONFIG_DIR="$HOME/.config/opencode"
+#
+# Read by both opencode and opencode.nvim to authenticate against the server.
+# They default to "opencode" and unset, which is what a local `opencode --port`
+# expects; set them only when pointing the plugin at a remote server through
+# `vim.g.opencode_opts.server.url`.
+# export OPENCODE_SERVER_USERNAME="opencode"
+# export OPENCODE_SERVER_PASSWORD="000000000000000000000000"
+# ---------------------------------------------------------------------------
+
+# Untracked local overrides: the real API keys go here, never above. Kept last
+# so it can override anything this file sets, and guarded so a machine without
+# the file still starts a shell cleanly.
+if [ -f "$HOME/.zshenv.local" ]; then
+  source "$HOME/.zshenv.local"
+fi

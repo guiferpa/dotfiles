@@ -37,10 +37,17 @@ HOME_FILES=(zsh/zshrc:.zshrc zsh/zshenv:.zshenv)
 #   htop              process viewer
 #   git, curl         lazy.nvim plugin manager
 #   asdf              version manager for the language runtimes
+#   opencode          the AI agent nvim/lua/plugins/opencode.lua drives
 #
 # Language runtimes are deliberately absent from this list: node, go, python
 # and rust are managed by asdf, never by Homebrew. See ASDF_PLUGINS below.
-BREW_FORMULAE=(neovim ripgrep fd htop git curl asdf)
+#
+# opencode is the one thing here that bends that rule, and not by choice: its
+# formula declares node as a required dependency, so installing it pulls a
+# Homebrew node in whether or not one is wanted. That copy stays shadowed —
+# .zshrc exports the asdf shims after every Homebrew path — so projects keep
+# resolving `node` through asdf. Nothing in this repo may depend on it.
+BREW_FORMULAE=(neovim ripgrep fd htop git curl asdf opencode)
 
 # Homebrew casks:
 #   rio                            the terminal
