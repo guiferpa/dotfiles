@@ -14,9 +14,10 @@ return {
           theme = 'dracula'
         },
         sections = {
-          -- Only lualine_c is named here; the other five sections keep their
-          -- defaults (mode, branch/diff/diagnostics, encoding/fileformat/
-          -- filetype, progress, location).
+          -- lualine_c and lualine_x are named here; the other four keep their
+          -- defaults (mode, branch/diff/diagnostics, progress, location).
+          -- Naming a section replaces it wholesale, which is why lualine_x
+          -- repeats the three defaults it would otherwise have.
           lualine_c = {
             'filename',
             {
@@ -35,6 +36,17 @@ return {
                 return ok and navic.is_available()
               end,
             },
+          },
+          lualine_x = {
+            -- The opencode agent's state. A plain require of a local module,
+            -- not of the plugin: `require("opencode").statusline` would drag
+            -- the plugin in on the first redraw and undo the lazy loading its
+            -- spec is built around — and it is dead code besides, which
+            -- lua/opencode_status.lua explains.
+            require('opencode_status').component,
+            'encoding',
+            'fileformat',
+            'filetype',
           },
         },
       })

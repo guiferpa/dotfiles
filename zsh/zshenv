@@ -6,9 +6,18 @@
 # ---------------------------------------------------------------------------
 # opencode
 #
-# Credentials for the agent that nvim/lua/plugins/opencode.lua drives. opencode
-# reads them from the environment, and zshenv is read by non-interactive shells
-# too — which is what the `term://opencode --port` buffer Neovim opens is.
+# Credentials for the agent that nvim/lua/plugins/opencode.lua drives.
+#
+# Not the usual way in. `opencode auth login` is, and it stores what it gets in
+# ~/.local/share/opencode/auth.json — it also covers the providers whose login
+# is not an API key at all, which nothing below can express. Neovim offers to
+# run it before starting an agent, or `:OpencodeLogin` on demand.
+#
+# What genuinely needs the environment: Amazon Bedrock, which authenticates
+# from AWS_* rather than from auth.json, and custom providers that reference
+# {env:VAR} in opencode.json. Those go here because zshenv is read by
+# non-interactive shells too — which is what the `term://opencode --port`
+# buffer Neovim opens is.
 #
 # THIS FILE IS PUBLIC. It is committed to the dotfiles repository and copied to
 # ~/.zshenv by install.sh. Every value below is a placeholder and every line is
@@ -16,6 +25,9 @@
 #
 # Real keys belong in ~/.zshenv.local, sourced at the bottom of this file and
 # never tracked. Create it with `touch ~/.zshenv.local && chmod 600 ~/.zshenv.local`.
+#
+# `:OpencodeEnv` in Neovim appends to ~/.zshenv.local for you, reading the value
+# without echoing it. Only a shell started afterwards sees it.
 #
 # Only the provider you actually configure as the model needs a key — this is a
 # menu, not a checklist.

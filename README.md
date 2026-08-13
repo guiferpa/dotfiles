@@ -263,12 +263,18 @@ looks for one already running and only starts its own — a terminal split on th
 right — when it finds none, so an `opencode --port` left open in another pane
 is adopted instead of duplicated.
 
+`,at` shows and hides that terminal. Hiding closes the window only: the buffer
+stays loaded, so the process survives and reopening returns to the same session.
+The statusline carries the agent's state — idle, working, errored, gone — and
+stays empty until the agent is first used.
+
 Mappings live under `,a`, since `,o` is oil's and `,c` clears the search
 highlight. [`nvim/SHORTCUTS.md`](nvim/SHORTCUTS.md) is the full reference and
 covers how to drive the agent; the short version:
 
 | Key   | Action                                       |
 | ----- | -------------------------------------------- |
+| `,at` | Show or hide the agent's terminal            |
 | `,aa` | Ask about the cursor position or selection   |
 | `,ab` | Ask about the whole buffer                   |
 | `,ad` | Ask about diagnostics                        |
@@ -289,15 +295,34 @@ Run `:checkhealth opencode` after the first start.
 
 ### Credentials
 
-opencode reads its provider keys from the environment, so they have to be set
-somewhere every shell sees — including the non-interactive one behind the
-`term://opencode --port` buffer. That means `zshenv`.
+**`opencode auth login` is the way in.** It stores credentials in
+`~/.local/share/opencode/auth.json`, and it handles the providers whose login
+is not an API key at all — the subscription and OAuth flows a "paste your key"
+prompt cannot do. Neovim never sees the secret.
 
-`zsh/zshenv` carries the full list as **commented-out placeholders**:
+You do not have to remember to run it. Before starting an agent, Neovim checks
+that the binary is installed and that a provider is authenticated, and offers
+the login if not. `:checkhealth opencode` covers the binary but checks no
+authentication at all, which is the gap this fills.
+
+| Command          | Does                                             |
+| ---------------- | ------------------------------------------------ |
+| `:OpencodeSetup` | Report what is configured and what is missing    |
+| `:OpencodeLogin` | Authenticate a provider                          |
+| `:OpencodeEnv`   | Write a provider variable to `~/.zshenv.local`   |
+
+#### Environment variables
+
+The secondary path, and genuinely needed: Amazon Bedrock authenticates from
+`AWS_*` rather than from `auth.json`, and custom providers reference
+`{env:VAR}` in `opencode.json`. These have to be visible to every shell,
+including the non-interactive one behind the `term://opencode --port` buffer —
+so `zshenv`, not `zshrc`.
+
+`zsh/zshenv` carries the list as **commented-out placeholders**:
 `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, the Bedrock
 `AWS_*` trio, the optional `OPENCODE_CONFIG` / `OPENCODE_CONFIG_DIR`, and
 `OPENCODE_SERVER_USERNAME` / `OPENCODE_SERVER_PASSWORD` for a remote server.
-Only the provider actually configured as the model needs a key.
 
 **No real key goes in that file.** It is committed here and copied to
 `~/.zshenv`, so anything written into it gets published. Real values go in
@@ -306,8 +331,13 @@ which no part of this repository tracks:
 
 ```sh
 touch ~/.zshenv.local && chmod 600 ~/.zshenv.local
-echo 'export ANTHROPIC_API_KEY="…"' >> ~/.zshenv.local
+echo 'export AWS_PROFILE="…"' >> ~/.zshenv.local
 ```
+
+`:OpencodeEnv` does the same thing from inside Neovim, reading the value with
+`inputsecret` so it is never echoed and writing it from Lua rather than through
+a shell, which would expose it in the process table. Note that only *new*
+shells read the file, so the agent terminal has to be restarted afterwards.
 
 ## Updating
 

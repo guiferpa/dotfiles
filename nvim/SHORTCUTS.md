@@ -18,6 +18,7 @@ Everything lives under `,a`, for *agent*.
 
 | Key   | Mode | Does                                              |
 | ----- | ---- | ------------------------------------------------- |
+| `,at` | n    | Show or hide the agent's terminal                 |
 | `,aa` | n, x | Ask about the cursor position, or the selection   |
 | `,ab` | n    | Ask about the whole buffer                        |
 | `,ad` | n, x | Ask about the diagnostics in range                |
@@ -27,6 +28,56 @@ Everything lives under `,a`, for *agent*.
 | `,ax` | n    | Interrupt whatever the agent is doing             |
 | `,au` | n    | Scroll the agent's output up half a page          |
 | `,ae` | n    | Scroll the agent's output down half a page        |
+
+### The terminal
+
+`,at` shows the agent in a vertical split on the right and puts you in terminal
+mode, ready to type at it. `,at` again hides it.
+
+Hiding closes the window and nothing else — the buffer stays loaded, so the
+`opencode` process keeps running and the plugin keeps talking to it. Reopening
+brings back the same session with its scrollback. What you must not do is wipe
+the buffer (`:bd!`): that kills the agent.
+
+While in terminal mode the keys go to opencode, not to Neovim. `<C-w>` is
+mapped inside that buffer to leave terminal mode and start a window command, so
+`<C-w>h` gets you back to the code. Plain `<C-\><C-n>` still works.
+
+The same terminal is used no matter who opened it. If the plugin needs a server
+and none is running, it starts one here rather than spawning a second.
+
+### What the statusline shows
+
+The right-hand side of the statusline carries the agent's state, and stays
+empty until the agent is first used.
+
+| Icon | Meaning                                     |
+| ---- | ------------------------------------------- |
+| `󰚩`  | Connected and idle                          |
+| `󱜙`  | Working on something                        |
+| `󱚡`  | The session hit an error                    |
+| `󱚧`  | Was connected, now gone                     |
+
+The number next to it is the port, which is what tells two agents apart when
+more than one is running.
+
+### If something is missing
+
+Before starting an agent, Neovim checks that `opencode` is installed and that a
+provider is authenticated — `:checkhealth opencode` does not check the second.
+When a provider is missing you get a picker that runs `opencode auth login` for
+you, in a split.
+
+| Command          | Does                                                     |
+| ---------------- | -------------------------------------------------------- |
+| `:OpencodeSetup` | Report what is configured and what is missing            |
+| `:OpencodeLogin` | Authenticate a provider                                  |
+| `:OpencodeEnv`   | Write a provider variable to `~/.zshenv.local`           |
+
+`:OpencodeEnv` is the exception, not the rule. Prefer `:OpencodeLogin`: it
+stores credentials where opencode keeps them and handles the providers whose
+login is not an API key at all. Environment variables are for Amazon Bedrock
+and custom providers, which have no other way in.
 
 ### How to actually use it
 
