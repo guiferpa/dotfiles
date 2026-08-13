@@ -151,13 +151,13 @@ Neovim would cancel the terminal's transparency out.
 ## Font
 
 [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), in the
-[Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) patched build, at size 12.
+[Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) patched build, at size 14.
 Set once in `rio/config.toml`:
 
 ```toml
 [fonts]
 family = "JetBrainsMono Nerd Font Mono"
-size = 12
+size = 14
 ```
 
 That is also the Neovim font. Neovim has no font setting of its own — it draws
@@ -168,8 +168,7 @@ Three details worth keeping in mind when changing it:
 - **Use the `Mono` variant.** Nerd Fonts ships three builds of every family,
   differing only in how the added icon glyphs are sized. `Mono` keeps them
   inside a single cell; `Propo` and the plain build let them run wider, which
-  makes the icons in `oil`, `lualine` and the navic winbar overlap the next
-  column.
+  makes the icons in `oil` and `lualine` overlap the next column.
 - **The patched build is not interchangeable with upstream.** `oil` and
   `lualine` draw their file icons through `mini.icons`
   (`nvim/lua/plugins/icons.lua`), which uses Nerd Font codepoints that upstream

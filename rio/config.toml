@@ -243,12 +243,14 @@ blur = true
 # The "Mono" variant is the one to use in a terminal. Nerd Fonts ships three
 # builds of every family and they differ only in how the added icon glyphs are
 # sized: "Mono" constrains them to a single cell, "Propo" and the plain build
-# let them spill wider. Anything but Mono makes the icons in oil, lualine and
-# barbecue overlap the column next to them.
+# let them spill wider. Anything but Mono makes the icons in oil and lualine
+# overlap the column next to them.
 #
-# The patched build is what carries the icons: nvim-web-devicons draws Nerd
-# Font codepoints that upstream JetBrains/JetBrainsMono does not contain, and
-# they would render as tofu boxes.
+# The patched build is what carries the icons: mini.icons draws Nerd Font
+# codepoints that upstream JetBrains/JetBrainsMono does not contain, and they
+# would render as tofu boxes. Nerd Fonts 3.0 or newer specifically — mini.icons
+# draws mostly from the Material Design class, which version 3 moved to
+# U+F0001-U+F1AF0, and a 2.x-patched font leaves almost all of them blank.
 #
 # Beware of text-oriented monospaced fonts here. Chivo Mono and Azeret Mono
 # were tried and cover roughly 640 and 430 codepoints: no box drawing, no block

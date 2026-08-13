@@ -53,7 +53,7 @@ BREW_FORMULAE=(neovim ripgrep fd htop git curl asdf opencode)
 #   rio                            the terminal
 #   font-jetbrains-mono-nerd-font  the font rio (and therefore neovim) draws
 #                                  with, patched with the Nerd Font icons that
-#                                  nvim-web-devicons needs
+#                                  mini.icons needs (version 3 or newer)
 BREW_CASKS=(rio font-jetbrains-mono-nerd-font)
 
 # asdf plugins to register, as "<name> <git url>".
