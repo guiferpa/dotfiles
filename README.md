@@ -135,7 +135,7 @@ Two things to know before changing it:
   prompt. Neovim ignores them and paints from its own colorscheme. Changing one
   without the other leaves the terminal and the editor disagreeing.
 - **`Mofiqul/dracula.nvim`, not upstream `dracula/vim`.** This config is built
-  on treesitter, LSP semantic tokens, Telescope, Trouble and barbecue, and only
+  on treesitter, LSP semantic tokens, Telescope, Trouble and navic, and only
   the Lua port defines highlight groups for them. `dracula/vim` is vimscript and
   predates all of it, so those plugins would fall back to default groups.
 
@@ -165,11 +165,21 @@ Three details worth keeping in mind when changing it:
 - **Use the `Mono` variant.** Nerd Fonts ships three builds of every family,
   differing only in how the added icon glyphs are sized. `Mono` keeps them
   inside a single cell; `Propo` and the plain build let them run wider, which
-  makes the icons in `oil`, `lualine` and `barbecue` overlap the next column.
-- **The patched build is not interchangeable with upstream.** `oil`, `lualine`
-  and `barbecue` pull in `nvim-web-devicons`, which draws Nerd Font codepoints
-  that upstream `JetBrains/JetBrainsMono` does not contain — with the plain
-  font they render as tofu boxes.
+  makes the icons in `oil`, `lualine` and the navic winbar overlap the next
+  column.
+- **The patched build is not interchangeable with upstream.** `oil` and
+  `lualine` draw their file icons through `mini.icons`
+  (`nvim/lua/plugins/icons.lua`), which uses Nerd Font codepoints that upstream
+  `JetBrains/JetBrainsMono` does not contain — with the plain font they render
+  as tofu boxes.
+- **Nerd Fonts 3.0 or newer is required, not just any patched build.**
+  `mini.icons` draws mostly from the `nf-md-*` (Material Design) class, which
+  version 3 moved out of the basic plane into `U+F0001`–`U+F1AF0`. Measured on
+  the current install, 279 of its 380 glyphs — 73% — live up there, against 55
+  of 322 for the `nvim-web-devicons` it replaced. A font patched with Nerd
+  Fonts 2.x carries that class at the old `U+F500`–`U+FD46` addresses and
+  almost every icon comes out blank. `JetBrainsMono Nerd Font Mono` at
+  Nerd Fonts 3.5.0 covers all 380.
 - **A monospaced font is not automatically a terminal font.** Coverage measured
   on the actual files:
 

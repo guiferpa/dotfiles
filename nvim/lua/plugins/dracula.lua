@@ -1,7 +1,7 @@
 -- Dracula, matching the Rio palette in rio/themes/dracula.toml.
 --
 -- Mofiqul/dracula.nvim rather than the upstream dracula/vim: this config is
--- built on treesitter, LSP semantic tokens, telescope, trouble and barbecue,
+-- built on treesitter, LSP semantic tokens, telescope, trouble and navic,
 -- and only the Lua port ships highlight groups for them. dracula/vim is
 -- vimscript and predates all of it, so those plugins would fall back to
 -- default groups.
