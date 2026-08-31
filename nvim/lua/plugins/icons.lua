@@ -10,7 +10,11 @@ return {
     -- `require`, which lazy.nvim intercepts to load and set up the plugin on
     -- demand.
     lazy = true,
-    opts = {},
+    opts = {
+      extension = {
+        ar = { glyph = "🦷", hl = "MiniIconsCyan" }, -- Ou escolha outro ícone/cor abaixo
+      }
+    },
     init = function()
       -- oil finds mini.icons on its own (it probes for `mini.icons` before
       -- falling back, see oil/util.lua get_icon_provider). lualine does not:
