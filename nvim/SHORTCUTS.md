@@ -203,6 +203,9 @@ Neovim 0.11 also ships its own LSP mappings under `gr`, left untouched here:
 | `,ll` | n    | Lint the file now (nvim-lint)   | `plugins/lint.lua`  |
 | `,c`  | n    | Clear the search highlight      | `lua/keymaps.lua`   |
 
+Go buffers are also formatted on every save, with `goimports` then `gofumpt`,
+so `,lf` is rarely needed there. No other filetype formats on save.
+
 Linting also runs on its own at `BufWritePost` and `BufReadPost`, so `,ll` is
 only for forcing it in between. The mapping does not exist on the startup
 screen — nvim-lint loads on `BufReadPre`, so `,ll` appears once a file is open.
