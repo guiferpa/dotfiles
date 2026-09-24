@@ -229,6 +229,41 @@ The debugger is `dlv` from mason, pinned to `v1.26.2` in `plugins/mason.lua`.
 Each delve release supports only three Go minors, and that one covers 1.24 to
 1.26. When the Go in use falls outside that range, move the pin.
 
+## Testing
+
+From `plugins/test.lua`: `neotest` with the `neotest-golang` adapter. Everything
+lives under `,t`, for *test*, and the plugins load on the first of these keys.
+
+| Key   | Mode | Does                                              |
+| ----- | ---- | ------------------------------------------------- |
+| `,tt` | n    | Run the nearest test                              |
+| `,tf` | n    | Run every test in the file                        |
+| `,tp` | n    | Run every test in the file's package              |
+| `,ta` | n    | Run every test in the project                     |
+| `,tl` | n    | Rerun the last run                                |
+| `,td` | n    | Debug the nearest test                            |
+| `,tx` | n    | Stop the run                                      |
+| `,ts` | n    | Show or hide the test tree                        |
+| `,to` | n    | Show the nearest test's output in a float         |
+| `,tO` | n    | Show or hide the output panel                     |
+| `]t`  | n    | Jump to the next failed test                      |
+| `[t`  | n    | Jump to the previous failed test                  |
+
+"Nearest" means the test the cursor is in, and that includes a single case of
+a table test: with the cursor on `{name: "two", ...}`, `,tt` runs only that
+case. Each test gets a pass or fail sign, and a failure's message lands as a
+diagnostic on the line that failed.
+
+`,td` and `,dt` both debug a test. `,td` goes through neotest, so the run
+also updates the signs and the tree; `,dt` is plain `nvim-dap-go`. Either
+stops at breakpoints set with `,db`.
+
+Tests run through `gotestsum`, installed by mason, which the adapter
+recommends over parsing `go test -json` from stdout.
+
+`neotest-golang` is held on v1. Its v2 requires nvim-treesitter's `main`
+branch, and that requires Neovim 0.12 — see the pin in `plugins/treesitter.lua`.
+
 ## Editing
 
 | Key   | Mode | Does                            | Where               |

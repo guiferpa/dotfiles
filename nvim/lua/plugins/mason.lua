@@ -15,6 +15,7 @@ return {
         goimports = true,
         gofumpt = true,
         delve = "v1.26.2",
+        gotestsum = true,
       }
       local registry = require('mason-registry')
       registry.refresh(function()
