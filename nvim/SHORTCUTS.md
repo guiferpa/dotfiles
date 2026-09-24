@@ -196,6 +196,39 @@ Neovim 0.11 also ships its own LSP mappings under `gr`, left untouched here:
 `grr` references, `grn` rename, `gra` code action, `gri` implementation and
 `grt` type definition.
 
+## Debugging
+
+From `plugins/debug.lua`: `nvim-dap`, with `nvim-dap-go` for Go and
+`nvim-dap-ui` for the panels. Everything lives under `,d`, for *debug*, and
+the plugins load on the first of these keys.
+
+| Key   | Mode | Does                                              |
+| ----- | ---- | ------------------------------------------------- |
+| `,db` | n    | Toggle a breakpoint                               |
+| `,dB` | n    | Set a conditional breakpoint                      |
+| `,dc` | n    | Start a session, or continue to the next stop     |
+| `,dn` | n    | Step over                                         |
+| `,di` | n    | Step into                                         |
+| `,do` | n    | Step out                                          |
+| `,dr` | n    | Run to the cursor                                 |
+| `,dl` | n    | Rerun the last session                            |
+| `,dx` | n    | Stop the session                                  |
+| `,du` | n    | Show or hide the debug UI                         |
+| `,de` | n, v | Evaluate the expression under the cursor, or the selection |
+| `,dt` | n    | Debug the Go test under the cursor                |
+| `,dT` | n    | Debug the last Go test again                      |
+
+The UI opens by itself when a session starts and closes when it ends.
+
+`,dt` is the one to reach for in Go: put the cursor inside a `Test…` function,
+set a breakpoint with `,db`, and press it. `,dc` with no session running asks
+what to launch — the file, the package, or a test — through `nvim-dap-go`'s
+default configurations.
+
+The debugger is `dlv` from mason, pinned to `v1.26.2` in `plugins/mason.lua`.
+Each delve release supports only three Go minors, and that one covers 1.24 to
+1.26. When the Go in use falls outside that range, move the pin.
+
 ## Editing
 
 | Key   | Mode | Does                            | Where               |
