@@ -185,7 +185,6 @@ From `plugins/lsp-config.lua`. Servers: `lua_ls`, `ts_ls`, `gopls`, `pylsp`,
 | ----- | ---- | ------------------------- |
 | `gd`  | n    | Go to definition          |
 | `gD`  | n    | Go to declaration         |
-| `gi`  | n    | Go to implementation      |
 | `K`   | n    | Hover documentation       |
 | `,lr` | n    | Rename symbol             |
 | `,lh` | n    | Toggle inlay hints        |
@@ -194,7 +193,8 @@ From `plugins/lsp-config.lua`. Servers: `lua_ls`, `ts_ls`, `gopls`, `pylsp`,
 
 Neovim 0.11 also ships its own LSP mappings under `gr`, left untouched here:
 `grr` references, `grn` rename, `gra` code action, `gri` implementation and
-`grt` type definition.
+`grt` type definition. `gri` is the only way to the implementation: `gi` is
+left as Vim's own, which resumes insert mode where you last left it.
 
 ## Debugging
 
@@ -246,8 +246,8 @@ lives under `,t`, for *test*, and the plugins load on the first of these keys.
 | `,ts` | n    | Show or hide the test tree                        |
 | `,to` | n    | Show the nearest test's output in a float         |
 | `,tO` | n    | Show or hide the output panel                     |
-| `]t`  | n    | Jump to the next failed test                      |
-| `[t`  | n    | Jump to the previous failed test                  |
+| `]e`  | n    | Jump to the next failed test                      |
+| `[e`  | n    | Jump to the previous failed test                  |
 
 "Nearest" means the test the cursor is in, and that includes a single case of
 a table test: with the cursor on `{name: "two", ...}`, `,tt` runs only that
@@ -325,12 +325,6 @@ list.
 These are consequences of the mappings above, not bugs to fix blindly — but
 they explain surprising behaviour.
 
-- **`]t` and `[t` replace Neovim 0.11's tag navigation.** Stock 0.11 maps
-  them to `:tnext` and `:tprevious`; here they jump between failed tests
-  instead. The `:tnext` and `:tprevious` commands still work.
-- **`gi` hides Vim's own `gi`**, which resumes insert mode where you last left
-  it. It goes to the implementation instead; `gri` does the same thing and
-  leaves `gi` free, if that one is missed.
 - **`,c` waits before clearing the highlight**, because `,ca` and `,ct` share
   its prefix. It fires after `timeoutlen`, or immediately on any key that
   cannot continue a mapping.

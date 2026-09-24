@@ -34,12 +34,12 @@ return {
       },
       { "<leader>tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle the output panel" },
       {
-        "]t",
+        "]e",
         function() require("neotest").jump.next({ status = "failed" }) end,
         desc = "Next failed test",
       },
       {
-        "[t",
+        "[e",
         function() require("neotest").jump.prev({ status = "failed" }) end,
         desc = "Previous failed test",
       },
