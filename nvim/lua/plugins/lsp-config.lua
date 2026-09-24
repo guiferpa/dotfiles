@@ -13,6 +13,27 @@ return {
       })
       lspconfig.gopls.setup({
         capabilities = capabilities,
+        settings = {
+          gopls = {
+            -- Matches conform, which runs gofumpt on save.
+            gofumpt = true,
+            staticcheck = true,
+            usePlaceholders = true,
+            analyses = {
+              unusedparams = true,
+              shadow = true,
+            },
+            -- Only drawn while inlay hints are on, see <leader>lh.
+            hints = {
+              assignVariableTypes = true,
+              compositeLiteralFields = true,
+              constantValues = true,
+              functionTypeParameters = true,
+              parameterNames = true,
+              rangeVariableTypes = true,
+            },
+          },
+        },
       })
       lspconfig.pylsp.setup({
         capabilities = capabilities,
@@ -37,6 +58,9 @@ return {
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
       vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, opts)
       vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action, opts)
+      vim.keymap.set('n', '<leader>lh', function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+      end, { desc = "Toggle inlay hints" })
     end
   }
 }

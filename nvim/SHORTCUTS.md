@@ -188,6 +188,7 @@ From `plugins/lsp-config.lua`. Servers: `lua_ls`, `ts_ls`, `gopls`, `pylsp`,
 | `gi`  | n    | Go to implementation      |
 | `K`   | n    | Hover documentation       |
 | `,lr` | n    | Rename symbol             |
+| `,lh` | n    | Toggle inlay hints        |
 | `,ca` | n, v | Code action               |
 | `,ct` | n    | Toggle the Trouble list   |
 
