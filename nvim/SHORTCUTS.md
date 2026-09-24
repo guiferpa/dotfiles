@@ -186,23 +186,26 @@ From `plugins/lsp-config.lua`. Servers: `lua_ls`, `ts_ls`, `gopls`, `pylsp`,
 | `gd`  | n    | Go to definition          |
 | `gD`  | n    | Go to declaration         |
 | `gi`  | n    | Go to implementation      |
-| `gr`  | n    | List references           |
 | `K`   | n    | Hover documentation       |
-| `rn`  | n    | Rename symbol             |
+| `,lr` | n    | Rename symbol             |
 | `,ca` | n, v | Code action               |
 | `,ct` | n    | Toggle the Trouble list   |
 
+Neovim 0.11 also ships its own LSP mappings under `gr`, left untouched here:
+`grr` references, `grn` rename, `gra` code action, `gri` implementation and
+`grt` type definition.
+
 ## Editing
 
-| Key  | Mode | Does                            | Where               |
-| ---- | ---- | ------------------------------- | ------------------- |
-| `ff` | n    | Format the buffer (conform)     | `plugins/format.lua` |
-| `ll` | n    | Lint the file now (nvim-lint)   | `plugins/lint.lua`  |
-| `,c` | n    | Clear the search highlight      | `lua/keymaps.lua`   |
+| Key   | Mode | Does                            | Where               |
+| ----- | ---- | ------------------------------- | ------------------- |
+| `,lf` | n    | Format the buffer (conform)     | `plugins/format.lua` |
+| `,ll` | n    | Lint the file now (nvim-lint)   | `plugins/lint.lua`  |
+| `,c`  | n    | Clear the search highlight      | `lua/keymaps.lua`   |
 
-Linting also runs on its own at `BufWritePost` and `BufReadPost`, so `ll` is
+Linting also runs on its own at `BufWritePost` and `BufReadPost`, so `,ll` is
 only for forcing it in between. The mapping does not exist on the startup
-screen — nvim-lint loads on `BufReadPre`, so `ll` appears once a file is open.
+screen — nvim-lint loads on `BufReadPre`, so `,ll` appears once a file is open.
 
 `nvim-surround` is installed with its defaults: `ys` add, `cs` change, `ds`
 delete, plus `S` in visual mode.
@@ -250,14 +253,6 @@ list.
 These are consequences of the mappings above, not bugs to fix blindly — but
 they explain surprising behaviour.
 
-- **`gr` hides Neovim 0.11's own LSP prefix.** A stock 0.11.6 ships `grn`
-  (rename), `gra` (code action), `grr` (references), `gri` (implementation) and
-  `grt` (type definition). Mapping `gr` on its own means none of those can ever
-  fire — and `grt` has no replacement here.
-- **`rn`, `ff` and `ll` shadow builtin motions.** Vim waits `timeoutlen` on the
-  first key of each: `r` before a replace, `f` before a character search, `l`
-  before moving right. `r` then `n` no longer replaces a character with `n`,
-  and `ff` no longer jumps to the next `f`.
 - **`,c` waits before clearing the highlight**, because `,ca` and `,ct` share
   its prefix. It fires after `timeoutlen`, or immediately on any key that
   cannot continue a mapping.

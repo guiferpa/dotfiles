@@ -16,7 +16,7 @@ return {
 
       conform.setup(opts)
 
-      vim.keymap.set("n", "ff", function ()
+      vim.keymap.set("n", "<leader>lf", function ()
         conform.format()
       end, { desc = "Format current buffer" })
     end
