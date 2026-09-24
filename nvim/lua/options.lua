@@ -5,6 +5,7 @@ vim.opt.title = true
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.cursorline = true
 vim.opt.cc = "80"
+vim.opt.tabstop = 4
 vim.opt.cmdheight = 2
 vim.opt.shiftwidth = 2
 vim.opt.smartindent = true
