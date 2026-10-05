@@ -3,6 +3,24 @@
 # Appends only: nothing here may come before the asdf shims exported at the
 # bottom of .zshrc, or it would shadow a language runtime.
 
+# ---------------------------------------------------------------------------
+# AI assistant
+#
+# nvim/lua/plugins/codecompanion.lua sends every request to the Anthropic API
+# with this key. It lives in zshenv rather than zshrc so any Neovim sees it,
+# however it was started.
+#
+# THIS FILE IS PUBLIC. It is committed to the dotfiles repository and copied to
+# ~/.zshenv by install.sh. The value below is a placeholder and the line is
+# commented out; a real key written here would be published on the next push.
+#
+# The real key belongs in ~/.zshenv.local, sourced at the bottom of this file
+# and never tracked. Create it with `touch ~/.zshenv.local && chmod 600 ~/.zshenv.local`.
+# Only a shell started afterwards sees it.
+#
+# export ANTHROPIC_API_KEY="sk-ant-api03-000000000000000000000000"
+# ---------------------------------------------------------------------------
+
 # Untracked local overrides: the real API keys go here, never above. Kept last
 # so it can override anything this file sets, and guarded so a machine without
 # the file still starts a shell cleanly.

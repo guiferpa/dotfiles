@@ -7,6 +7,79 @@ here, it is either a Vim builtin or a plugin default this repo never touches.
 **The leader is `,`** (`lua/options.lua:18`, `mapleader` and `maplocalleader`).
 Keys below are written literally, so `,ff` means comma then `f` then `f`.
 
+## CodeCompanion
+
+An assistant that works inside Neovim buffers instead of a terminal
+(`lua/plugins/codecompanion.lua`). Every request goes straight to the Anthropic
+API, so it needs `ANTHROPIC_API_KEY` exported — put it in `~/.zshenv.local`
+and start Neovim from a new shell. The plugin warns on first use if the key is
+missing.
+
+Everything lives under `,a`, for *AI*.
+
+| Key   | Mode | Does                                                   |
+| ----- | ---- | ------------------------------------------------------ |
+| `,ai` | n, x | Inline prompt — the answer is written into the buffer  |
+| `,ac` | n    | Show or hide the chat                                  |
+| `,ac` | x    | Add the selection to the chat                          |
+| `,an` | n, x | Start a new chat                                       |
+| `,ap` | n, x | Action palette: explain, fix, tests, and saved prompts |
+
+### Inline: select and generate
+
+Select code (or don't), press `,ai`, type what you want and hit `<CR>`. It is
+just `:CodeCompanion ` on the command line, so command history works and the
+selection travels as the `'<,'>` range.
+
+```
+,ai  write a function that parses this date format
+v…,ai  refactor this to use early returns
+v…,ai  /tests          a prompt from the library instead of free text
+,ai  #{buffer} add a method that validates the struct
+```
+
+The model decides whether to replace the selection, add at the cursor, open a
+new buffer or answer in the chat. Edits show up as a diff, and these keys apply
+inside it:
+
+| Key  | Does                                  |
+| ---- | ------------------------------------- |
+| `g2` | Accept the change                     |
+| `g3` | Reject the change                     |
+| `g1` | Accept this and every later change    |
+| `gv` | View the proposed diff                |
+| `}`  | Next hunk                             |
+| `{`  | Previous hunk                         |
+| `q`  | Stop a request still running          |
+
+The upstream docs still say `gda`/`gdr`; v19 moved them to the `g1`–`g3` keys
+above.
+
+### Chat: talk, then generate
+
+Inside the chat buffer:
+
+| Key             | Does                                                |
+| --------------- | --------------------------------------------------- |
+| `<CR>`, `<C-s>` | Send (`<C-s>` also in insert mode)                  |
+| `q`             | Stop the response                                   |
+| `<C-c>`         | Close the chat                                      |
+| `gy`            | Yank the code block under the cursor, else the last |
+| `ga`            | Change adapter or model for this chat               |
+| `gx`            | Clear the chat                                      |
+| `?`             | List every chat keymap                              |
+
+Context goes in with `#{…}` and slash commands, both completed by nvim-cmp:
+
+```
+#{buffer}             the buffer you were last in
+#{buffer:main.go}     a specific file by name
+/file                 pick a file with telescope
+/buffer               pick open buffers
+```
+
+Run `:checkhealth codecompanion` if something is off.
+
 ## Files and search
 
 | Key   | Mode | Does                                     | Where                |

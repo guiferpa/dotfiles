@@ -255,6 +255,43 @@ Mason installs `ts_ls` and `pylsp` into whatever `node`/`python` is active, so
 they live inside an asdf install directory. After changing a runtime version,
 run `asdf reshim` and reinstall the affected servers from `:Mason`.
 
+## AI assistant
+
+[CodeCompanion](https://github.com/olimorris/codecompanion.nvim)
+(`nvim/lua/plugins/codecompanion.lua`) works inside Neovim buffers: select code
+and describe a change to get it written in place as a diff, or talk it through
+in a chat split and pull the generated code out. Every request goes straight to
+the Anthropic API — the inline half only supports HTTP adapters, so it cannot
+run through the Claude Code CLI or a subscription.
+
+Mappings live under `,a`. [`nvim/SHORTCUTS.md`](nvim/SHORTCUTS.md) is the full
+reference, including the keys inside the diff and the chat; the short version:
+
+| Key   | Action                                           |
+| ----- | ------------------------------------------------ |
+| `,ai` | Inline prompt, with the selection as context     |
+| `,ac` | Toggle the chat, or add the selection to it      |
+| `,an` | New chat                                         |
+| `,ap` | Action palette                                   |
+
+Run `:checkhealth codecompanion` after the first start.
+
+### The API key
+
+The plugin reads `ANTHROPIC_API_KEY` from the environment and warns on first
+use when it is missing. **No real key goes in `zsh/zshenv`**: that file is
+committed here and copied to `~/.zshenv`, so anything written into it gets
+published. Real values go in `~/.zshenv.local`, which the last lines of
+`zshenv` source if it exists and which no part of this repository tracks:
+
+```sh
+read -rs "k?ANTHROPIC_API_KEY: " && printf 'export ANTHROPIC_API_KEY="%s"\n' "$k" >> ~/.zshenv.local && chmod 600 ~/.zshenv.local && unset k
+```
+
+`read -s` keeps the key off the screen and out of the shell history, and
+`printf` is a builtin, so it never shows up in the process table. Only *new*
+shells read the file, so restart Neovim from one afterwards.
+
 ## Updating
 
 Configurations are **copied**, not symlinked, so editing `~/.config/nvim` or

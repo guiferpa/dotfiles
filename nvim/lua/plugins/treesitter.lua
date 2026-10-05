@@ -8,7 +8,12 @@ return {
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "c", "lua", "vim", "rust", "go", "clojure", "typescript", "tsx", "javascript", "html", "python" },
+        ensure_installed = {
+          "c", "lua", "vim", "rust", "go", "clojure", "typescript", "tsx", "javascript", "html", "python",
+          -- The codecompanion chat buffer is markdown, and its prompt library
+          -- parses yaml front matter (plugins/codecompanion.lua).
+          "markdown", "markdown_inline", "yaml",
+        },
         sync_install = false,
         highlight = { enable = true },
         indent = { enable = true },
