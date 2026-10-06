@@ -94,7 +94,21 @@ return {
       -- default (Claude Sonnet); `ga` in the chat switches it per conversation.
       interactions = {
         background = { adapter = "anthropic" },
-        chat = { adapter = "anthropic" },
+        chat = {
+          adapter = "anthropic",
+          tools = {
+            opts = {
+              -- No tool is loaded by default, so without this the model can
+              -- only answer with code blocks unless the message mentions
+              -- `@{files}`. The group lets it create, read, edit, search and
+              -- delete files on its own. Deleting still asks first, and a
+              -- created file still has to be accepted afterwards. Its output
+              -- already goes back to the model by default
+              -- (`auto_submit_success` and `auto_submit_errors`).
+              default_tools = { "files" },
+            },
+          },
+        },
         inline = { adapter = "anthropic" },
         cmd = { adapter = "anthropic" },
       },
