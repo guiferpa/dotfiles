@@ -98,6 +98,13 @@ return {
         inline = { adapter = "anthropic" },
         cmd = { adapter = "anthropic" },
       },
+      display = {
+        chat = {
+          -- Left unset, the side follows `splitright`, which this config
+          -- leaves off — so the chat would open on the left.
+          window = { position = "right" },
+        },
+      },
     },
     config = function(_, opts)
       check_api_key()
