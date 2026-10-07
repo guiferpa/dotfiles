@@ -5,13 +5,23 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         python = { "black" },
-        javascript = { "eslint_d" },
-        typescript = { "eslint_d" },
-        javascriptreact = { "eslint_d" },
-        typescriptreact = { "eslint_d" },
+        -- eslint_d when the project configures ESLint, otherwise prettierd,
+        -- which falls back to Prettier's defaults when there is no
+        -- .prettierrc either.
+        javascript = { "eslint_d", "prettierd", stop_after_first = true },
+        typescript = { "eslint_d", "prettierd", stop_after_first = true },
+        javascriptreact = { "eslint_d", "prettierd", stop_after_first = true },
+        typescriptreact = { "eslint_d", "prettierd", stop_after_first = true },
         -- goimports first so the import block is settled before gofumpt
         -- lays out the rest.
         go = { "goimports", "gofumpt" }
+      },
+      formatters = {
+        eslint_d = {
+          condition = function(_, ctx)
+            return require("config.eslint").has_config(ctx.buf)
+          end
+        }
       },
       -- Go only: gofmt is the language's convention, so formatting on save
       -- never fights anyone. Other filetypes keep formatting on demand.

@@ -16,6 +16,8 @@ return {
         gofumpt = true,
         delve = "v1.26.2",
         gotestsum = true,
+        eslint_d = true,
+        prettierd = true,
       }
       local registry = require('mason-registry')
       registry.refresh(function()

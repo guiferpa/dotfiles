@@ -220,6 +220,11 @@ Linting also runs on its own at `BufWritePost` and `BufReadPost`, so `,ll` is
 only for forcing it in between. The mapping does not exist on the startup
 screen — nvim-lint loads on `BufReadPre`, so `,ll` appears once a file is open.
 
+JS/TS buffers use `eslint_d` only when the project has an ESLint config
+(`eslint.config.*`, `.eslintrc*` or `eslintConfig` in `package.json`). Without
+one, linting is skipped and `,lf` formats with `prettierd`, which follows the
+project's `.prettierrc` if there is one and Prettier's defaults otherwise.
+
 `nvim-surround` is installed with its defaults: `ys` add, `cs` change, `ds`
 delete, plus `S` in visual mode.
 
